@@ -1,0 +1,13 @@
+
+class Player
+{    
+
+    int[] hand;
+    int[] deck;
+    int[] amulet;
+    int[] discard; 
+    int cardsDrawn = 0;
+    int numInHand = 0;
+    int numInAmu = 0;
+    int numInDiscard = 0;
+}
