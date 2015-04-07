@@ -602,7 +602,14 @@ public class Run
 	}
 	public static void crack(int card, int player)
 	{
-
+		if(player == 1)
+		{
+			if(card == 1)
+			{
+				if(PlayerOne.deck[1 + PlayerOne.cardsDrawn == 1)
+				
+			}
+		}
 	}
 	public static void draw (Boolean display, int player)
 	{
