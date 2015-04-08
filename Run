@@ -9,7 +9,7 @@ public class Run
 	 */
 	static Player PlayerOne = new Player();
 	static Player PlayerTwo = new Player();
-	static int[] theStack = new int[]{00,0, 0, 0, 0, 0, 0};
+	static int[][] theStack = new int[2][100];
 	static Boolean running = true;
 	static Boolean playing = false;
 	static Boolean playingACard = false;
@@ -47,14 +47,13 @@ public class Run
 				System.out.println("shuffled deck for player one");
 				PlayerTwo.deck = initalizeDeck ();
 				System.out.println("shuffled deck for player two");
-					System.out.println();
-					System.out.println("Envy:" + PlayerTwo.hand[3]);
-					System.out.println();
-					System.out.println("Wrath:" + PlayerTwo.hand[4]);
-					System.out.println();
-					System.out.println("Lust:" + PlayerTwo.hand[5]);
-					System.out.println();   
-				}
+				System.out.println();
+				System.out.println("Envy:" + PlayerTwo.hand[3]);
+				System.out.println();
+				System.out.println("Wrath:" + PlayerTwo.hand[4]);
+				System.out.println();
+				System.out.println("Lust:" + PlayerTwo.hand[5]);
+				System.out.println();   
 			}
 			else if(strInput.equals("q"))
 				//quit key (for enitre program)
