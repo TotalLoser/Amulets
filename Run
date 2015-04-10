@@ -9,7 +9,7 @@ public class Run
      */
     static Player PlayerOne = new Player();
     static Player PlayerTwo = new Player();
-    static int[][] theStack = new int[5][100];
+    static int[][] theStack = new int[6][100];
     static Boolean running = true;
     static Boolean playing = false;
     static Boolean playingACard = false;
@@ -73,19 +73,20 @@ public class Run
                 draw(false, 2);
                 draw(false, 2);
                 System.out.println("drew hand for player two");
+                System.out.println("It is player " + whosTurn + "'s turn");
             }
             else if (strInput.equals("h"))
             {
-               veiwHand(whosTurn);
+                veiwHand(whosTurn);
             }
             else if(strInput.equals("q"))
-                //quit key (for enitre program)
+            //quit key (for enitre program)
             {
                 System.out.println("quitting...");
                 running = false; 
             }
             else if(strInput.equals("t"))
-                //this is for testing variables
+            //this is for testing variables
             {
                 System.out.println("strInput: " + strInput);
                 System.out.println();
@@ -127,17 +128,17 @@ public class Run
                 System.out.println();
             }
             else if (strInput.equals("?"))
-                //help key
+            //help key
             {
                 System.out.println("Help: 'q' to quit 'qg' to quit game but not program 'h' to veiw your hand 'hc' to see the number of cards in your hand 'p' to pass the turn(('t' to test and 'd' to draw. only for testing purposes))");
             }
             else if (strInput.equals("d") && playing == true)
-                // draws a card.. this is for testing
+            // draws a card.. this is for testing
             {
                 draw (true, whosTurn);
             }
             else if (strInput.equals("hc") && playing == true)
-                //tells the number of cards in your hand
+            //tells the number of cards in your hand
             {
                 if(whosTurn == 1)
                 {
@@ -149,7 +150,7 @@ public class Run
                 }
             }
             else if (strInput.equals("p") && playing == true)
-                //pass the turn key
+            //pass the turn key
             {
                 playedACard = false;
                 if(whosTurn == 1)
@@ -186,10 +187,10 @@ public class Run
                         resolveStack();
                     }
                 }
-                
+
             }
             else if (strInput.equals("qg") && playing == true)
-                //key to quit the game not the program
+            //key to quit the game not the program
             {
                 playing = false;
 
@@ -206,13 +207,17 @@ public class Run
                     intInput = stringToInt(input.nextLine()); 
                     if(whosTurn == 1)
                     {
-                        if(PlayerOne.hand[intInput] > 0)
+                        if(intInput == 6)
+                        {
+                            veiwHand(whosTurn);
+                        }
+                        else if(PlayerOne.hand[intInput] > 0)
                         {
                             //test to make sure they have the gem
                             // then taking it out of their hand and doing its effect
                             System.out.println("Player " + whosTurn + " is playing " + intToString(intInput));
                             PlayerOne.hand[intInput] --;
-                            addCardToStack(intInput, 1, 0);
+                            addCardToStack(intInput, 1, 0, 0);
                             resolveStack();
                             cardsInAmu(1);
                             playedACard = true;
@@ -232,13 +237,17 @@ public class Run
                     }
                     else
                     {
-                        if(PlayerTwo.hand[intInput] > 0)
+                        if(intInput == 6)
+                        {
+                            veiwHand(whosTurn);
+                        }
+                        else if(PlayerTwo.hand[intInput] > 0)
                         {
                             //test to make sure they have the gem
                             // then taking it out of their hand and doing its effect
                             System.out.println("Player " + whosTurn + " is playing " + intToString(intInput));
                             PlayerTwo.hand[intInput] --;
-                            addCardToStack(intInput, 2, 0);
+                            addCardToStack(intInput, 2, 0, 0);
                             resolveStack();
                             cardsInAmu(2);
                             playedACard = true;
@@ -248,7 +257,7 @@ public class Run
                             System.out.println("you dont have that gem!");
                         } 
                     }
-                    
+
                 }
                 else
                 {
@@ -273,6 +282,7 @@ public class Run
         }
         System.out.println("quitted.");
     }
+
     public static int[] initalizeDeck ()
     {
         //This function returns a shuffled deck
@@ -295,40 +305,40 @@ public class Run
         {
             int rInt = randInt(1, 5);
             if (gInDeck == 7 && sInDeck == 7 && eInDeck == 7 && wInDeck == 7 && lInDeck == 7)
-                //runs the loop until each card has been put in 7 times
+            //runs the loop until each card has been put in 7 times
             {
                 initalizingDeck = false;
             }
             else if (rInt == 1 && gInDeck < 7)
-                //if the random tell it to & there hasnt been 7 gluttony already, it makes the next value gluttony
+            //if the random tell it to & there hasnt been 7 gluttony already, it makes the next value gluttony
             {
                 deck[1 + cardsAdded] = 1;
                 gInDeck ++;
                 cardsAdded ++;
             }
             else if (rInt == 2 && sInDeck < 7)
-                //if the random tell it to & there hasnt been 7 sloth already, it makes the next value sloth
+            //if the random tell it to & there hasnt been 7 sloth already, it makes the next value sloth
             {
                 deck[1 + cardsAdded] = 2;
                 sInDeck ++;
                 cardsAdded ++;
             }
             else if (rInt == 3 && eInDeck < 7)
-                //if the random tell it to & there hasnt been 7 envy already, it makes the next value envy
+            //if the random tell it to & there hasnt been 7 envy already, it makes the next value envy
             {
                 deck[1 + cardsAdded] = 3;
                 eInDeck ++;
                 cardsAdded ++;
             }
             else if (rInt == 4 && wInDeck < 7)
-                //if the random tell it to & there hasnt been 7 wrath already, it makes the next value wrath
+            //if the random tell it to & there hasnt been 7 wrath already, it makes the next value wrath
             {
                 deck[1 + cardsAdded] = 4;
                 wInDeck ++;
                 cardsAdded ++;
             }
             else if (rInt == 5 && lInDeck < 7)
-                //if the random tell it to & there hasnt been 7 lust already, it makes the next value lust
+            //if the random tell it to & there hasnt been 7 lust already, it makes the next value lust
             {
                 deck[1 + cardsAdded] = 5;
                 lInDeck ++;
@@ -337,8 +347,9 @@ public class Run
         }
         return deck;
     }
+
     public static void play(int card, int player)
-        //this funtion plays a card(card) by player(player)
+    //this funtion plays a card(card) by player(player)
     {
         if(card == 1)
         {
@@ -638,6 +649,7 @@ public class Run
         }
         playingACard = false;
     }
+
     public static void crack(int card, int player)
     {
         if(player == 1)
@@ -713,6 +725,18 @@ public class Run
                     }
                     else
                     {
+                        System.out.println("Opponents hand:");
+                        System.out.println();
+                        System.out.println("Gluttony:" + PlayerTwo.hand[1]);
+                        System.out.println();
+                        System.out.println("Sloth:" + PlayerTwo.hand[2]);
+                        System.out.println();
+                        System.out.println("Envy:" + PlayerTwo.hand[3]);
+                        System.out.println();
+                        System.out.println("Wrath:" + PlayerTwo.hand[4]);
+                        System.out.println();
+                        System.out.println("Lust:" + PlayerTwo.hand[5]);
+                        System.out.println();
                         System.out.println("the opponent doesnt have that gem!");
                         crack(3, 1);
                     }
@@ -768,7 +792,11 @@ public class Run
                         System.out.println("You don't have that gem in your discard!");
                         crack(5, 1);
                     }   
-                }  
+                } 
+                else
+                {
+                    System.out.println("You have no cards in your discard! No effect");
+                }
             }
         }
         else
@@ -867,7 +895,7 @@ public class Run
                 cardsInDiscard(1);
                 if(PlayerTwo.numInDiscard > 0)
                 {
-                    System.out.println("Oponents amulet:");
+                    System.out.println("Your discard:");
                     System.out.println();
                     System.out.println("Gluttony:" + PlayerTwo.discard[1]);
                     System.out.println();
@@ -899,10 +927,15 @@ public class Run
                         System.out.println("You don't have that gem in your discard!");
                         crack(5, 2);
                     }
-                } 
+                }
+                else
+                {
+                    System.out.println("You have no cards in your discard! No effect");
+                }
             }
         }
     }
+
     public static void draw (Boolean display, int player)
     {
         if(player == 1)
@@ -925,7 +958,7 @@ public class Run
                 else if ( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 3)
                 {
                     PlayerOne.hand[3] ++; 
-                          System.out.println("Envy");
+                    System.out.println("Envy");
                     PlayerOne.cardsDrawn ++;
                 }
                 else if ( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 4)
@@ -1038,6 +1071,7 @@ public class Run
             cardsInHand(2);
         }
     } 
+
     public static void cardsInHand (int player)
     {
         if(player == 1)
@@ -1049,6 +1083,7 @@ public class Run
             PlayerTwo.numInHand = PlayerTwo.hand[1] + PlayerTwo.hand[2] + PlayerTwo.hand[3] + PlayerTwo.hand[4] + PlayerTwo.hand[5]; 
         }
     }
+
     public static void cardsInAmu(int player)
     {
         if(player == 1)
@@ -1060,6 +1095,7 @@ public class Run
             PlayerTwo.numInAmu = PlayerTwo.amulet[1] + PlayerTwo.amulet[2] + PlayerTwo.amulet[3] + PlayerTwo.amulet[4] + PlayerTwo.amulet[5];
         }
     }
+
     public static void cardsInDiscard(int player)
     {
         if(player == 1)
@@ -1071,6 +1107,7 @@ public class Run
             PlayerTwo.numInDiscard= PlayerTwo.discard[1] + PlayerTwo.discard[2] + PlayerTwo.discard[3] + PlayerTwo.discard[4] + PlayerTwo.discard[5];
         }
     }
+
     public static void description(String card)
     {
         if(card.equals("g"))
@@ -1115,6 +1152,7 @@ public class Run
             System.out.println("in your discard into your amulet");
         }
     }
+
     public static String intToString(int code)
     {
         String name = "not a card";
@@ -1140,6 +1178,7 @@ public class Run
         }
         return name;
     }
+
     public static int stringToInt(String name)
     {
         int code = 0;
@@ -1173,12 +1212,13 @@ public class Run
         }
         return code;
     }
+
     public static Boolean instantEffectCheck (int player)
     {
         Boolean response;
         System.out.println("Player " + player + " do you have a response? (y/n)");
         strInput = input.nextLine();   
-        if(intInput == 6)
+        if(strInput.equals("h"))
         {
             veiwHand(player);
             response = instantEffectCheck(player);
@@ -1199,6 +1239,7 @@ public class Run
         }
         return response;
     }
+
     public static void crackWhat(int player)
     {
         if(player == 1)
@@ -1217,22 +1258,34 @@ public class Run
                 {
                     System.out.println("What gem are you discarding?");
                     secondIntInput = stringToInt(input.nextLine());
-                    PlayerOne.hand[intInput] --;
-                    if(PlayerOne.hand[secondIntInput] > 0)
+                    addCardToStack(intInput, player, 1, secondIntInput);
+                    System.out.println("cards in stack: " + cardsInStack);
+                    System.out.println("card: " + theStack[1][cardsInStack]);
+                    System.out.println("discarded card: " + theStack[5][cardsInStack]);
+                    PlayerOne.hand[theStack[1][cardsInStack]] --;
+                    if(secondIntInput == 6)
                     {
-                        PlayerOne.hand[secondIntInput] --;
-                        addCardToStack(intInput, player, 1);
+                        veiwHand(player);
+                        crackWhat(player);
                     }
                     else
                     {
-                        System.out.println("You dont have that gem!");
-                        PlayerOne.hand[intInput] ++;
-                        crackWhat(player);
+                        if(PlayerOne.hand[secondIntInput] > 0)
+                        {
+                            PlayerOne.hand[theStack[5][cardsInStack]] --;
+                        }
+                        else
+                        {
+                            System.out.println("You dont have that gem!");
+                            cardsInStack --;
+                            crackWhat(player);
+                        }
                     }
                 }
                 else
                 {
                     System.out.println("You dont have that gem!");
+                    cardsInStack --;
                     crackWhat(player);
                 }
             }
@@ -1251,27 +1304,28 @@ public class Run
                 if(intInput == 6)
                 {
                     veiwHand(player);
+                    crackWhat(player);
                 }
                 else if(PlayerTwo.hand[intInput] > 0)
                 {
                     System.out.println("What gem are you discarding?");
                     secondIntInput = stringToInt(input.nextLine());
+                    addCardToStack(intInput, player, 1, secondIntInput);
+                    PlayerTwo.hand[theStack[1][cardsInStack]] --;
                     if(intInput == 6)
                     {
                         veiwHand(player);
                     }
                     else
                     {
-                        PlayerTwo.hand[intInput] --;
                         if(PlayerTwo.hand[secondIntInput] > 0)
                         {
-                            PlayerTwo.hand[secondIntInput] --;
-                            addCardToStack(intInput, player, 1);
+                            PlayerTwo.hand[theStack[5][cardsInStack]] --;
                         }
                         else
                         {
                             System.out.println("You dont have that gem!");
-                            PlayerTwo.hand[intInput] ++;
+                            cardsInStack --;
                             crackWhat(player);
                         }
                     }
@@ -1288,11 +1342,13 @@ public class Run
             }
         }   
     }
+
     public static void reveal(int player, String zone)
     {
 
     }
-        public static void addCardToStack (int card,int player, int crack)
+
+    public static void addCardToStack (int card,int player, int crack, int discard)
     {        
         cardsInStack ++;
         System.out.println("cards in stack: " + cardsInStack);
@@ -1300,6 +1356,7 @@ public class Run
         theStack[2][cardsInStack] = player;
         theStack[3][cardsInStack] = crack;
         theStack[4][cardsInStack] = 0;
+        theStack[5][cardsInStack] = discard;
         if (player == 2)
         {
             if(instantEffectCheck(1) == true)
@@ -1315,14 +1372,18 @@ public class Run
             }
         }
     }
+
     public static void resolveStack()
     {
-        System.out.println("Stack resolved");
+        int lastOut = theStack[2][1];
         while(cardsInStack > 0)
         {
             System.out.println("countered? " + theStack[4][cardsInStack]);
             if(theStack[4][cardsInStack] == 0)
             {
+                System.out.println("card: " + theStack[1][cardsInStack]);
+                System.out.println("player: " + theStack[2][cardsInStack]);
+                System.out.println("crack? " + theStack[3][cardsInStack]);
                 cast(theStack[1][cardsInStack], theStack[2][cardsInStack], theStack[3][cardsInStack]);
                 if(theStack[3][cardsInStack]== 0)
                 {
@@ -1335,15 +1396,43 @@ public class Run
                         PlayerTwo.amulet[theStack[1][cardsInStack]] ++;
                     }
                 }
+                else if(theStack[3][cardsInStack] == 1)
+                {
+                    if(theStack[2][cardsInStack] == 1)
+                    {
+                        PlayerOne.discard[theStack[1][cardsInStack]] ++;
+                        PlayerOne.discard[theStack[5][cardsInStack]] ++;
+                    }
+                    else
+                    {
+
+                        PlayerTwo.discard[theStack[1][cardsInStack]] ++;
+                        PlayerTwo.discard[theStack[5][cardsInStack]] ++;
+                    }
+                }
             }
             else 
             {
                 System.out.println("player " + theStack[2][cardsInStack] + "'s " + intToString(theStack[1][cardsInStack]) + " got countered");
+            } 
+            if(theStack[2][cardsInStack] == 1)
+            {
+                if(instantEffectCheck(1) == true)
+                {
+                    crackWhat(1);
+                }
             }
-            
-            cardsInStack --;  
-            System.out.println(cardsInStack);
-        }               
+            else 
+            {
+                if(instantEffectCheck(2) == true)
+                {
+                    crackWhat(2);
+                }
+            }
+            cardsInStack --; 
+        } 
+        System.out.println("Stack resolved");
+        System.out.println("cards in stack: " + cardsInStack);
     }
     public static void cast (int card, int player, int crack)
     {
@@ -1356,35 +1445,37 @@ public class Run
             play(card, player); 
         }
     }
+
     public static void veiwHand (int player)
     {
-         if(player == 1)
-         {
-             System.out.println("Gluttony: " + PlayerOne.hand[1]);
-             System.out.println();
-             System.out.println("Sloth: " + PlayerOne.hand[2]);
-             System.out.println();
-             System.out.println("Envy: " + PlayerOne.hand[3]);
-             System.out.println();
-             System.out.println("Wrath: " + PlayerOne.hand[4]);
-             System.out.println();
-             System.out.println("Lust: " + PlayerOne.hand[5]);
-             System.out.println();
-         }
-         else if(player == 2)
-         {
-             System.out.println("Gluttony: " + PlayerTwo.hand[1]);
-             System.out.println();
-             System.out.println("Sloth: " + PlayerTwo.hand[2]);
-             System.out.println();
-             System.out.println("Envy: " + PlayerTwo.hand[3]);
-             System.out.println();
-             System.out.println("Wrath: " + PlayerTwo.hand[4]);
-             System.out.println();
-             System.out.println("Lust: " + PlayerTwo.hand[5]);
-             System.out.println();
-         }
+        if(player == 1)
+        {
+            System.out.println("Gluttony: " + PlayerOne.hand[1]);
+            System.out.println();
+            System.out.println("Sloth: " + PlayerOne.hand[2]);
+            System.out.println();
+            System.out.println("Envy: " + PlayerOne.hand[3]);
+            System.out.println();
+            System.out.println("Wrath: " + PlayerOne.hand[4]);
+            System.out.println();
+            System.out.println("Lust: " + PlayerOne.hand[5]);
+            System.out.println();
+        }
+        else if(player == 2)
+        {
+            System.out.println("Gluttony: " + PlayerTwo.hand[1]);
+            System.out.println();
+            System.out.println("Sloth: " + PlayerTwo.hand[2]);
+            System.out.println();
+            System.out.println("Envy: " + PlayerTwo.hand[3]);
+            System.out.println();
+            System.out.println("Wrath: " + PlayerTwo.hand[4]);
+            System.out.println();
+            System.out.println("Lust: " + PlayerTwo.hand[5]);
+            System.out.println();
+        }
     }
+
     public static int randInt(int min, int max) 
     {
         // Usually this can be a field rather than a method variable
@@ -1396,9 +1487,4 @@ public class Run
         return randomNum;
     } 
 }
-
-
-
-
-
 
