@@ -2,919 +2,1489 @@ import java.util.Scanner;
 import java.util.Random;
 public class Run
 {
-	/*
-	 * creating player objects, the stack, declaring the 
-	 * fact that its running, wheather its playing, 
-	 * and whos turn it is (respectively).
-	 */
-	static Player PlayerOne = new Player();
-	static Player PlayerTwo = new Player();
-	static int[] theStack = new int[]{00,0, 0, 0, 0, 0, 0};
-	static Boolean running = true;
-	static Boolean playing = false;
-	static Boolean playingACard = false;
-	static Boolean playedACard = false;
-	static int whosTurn;
-	static Scanner input = new Scanner(System.in);
-	// just the scanner for new input
-	static String strInput;
-	//the string input
-	static int intInput; 
-	//the int input
-	public static void main(String [] args)
-	{
-		/*
-		 * Each gem has been assigned a number
-		 * Gluttony = 1
-		 * Sloth = 2
-		 * Envy = 3
-		 * Wrath = 4
-		 * Lust = 5
-		 */
-		System.out.println("initializing...");
-		System.out.println("initialized. type '?' for help and 'r' for rules");
-		while(running == true)
-		{
-			strInput = input.nextLine();
-			if(strInput.equals("S") && playing == false)
-			{
-				//Initializing the start of a game "S" being the start key
-				playing = true;
-				//let the program know the game is playing
-				whosTurn = randInt(1,2);
-				//randmoly select who goes first
-				PlayerOne.deck = initalizeDeck ();
-				System.out.println("shuffled deck for player one");
-				PlayerTwo.deck = initalizeDeck ();
-				System.out.println("shuffled deck for player two");
-					System.out.println();
-					System.out.println("Envy:" + PlayerTwo.hand[3]);
-					System.out.println();
-					System.out.println("Wrath:" + PlayerTwo.hand[4]);
-					System.out.println();
-					System.out.println("Lust:" + PlayerTwo.hand[5]);
-					System.out.println();   
-				}
-			}
-			else if(strInput.equals("q"))
-				//quit key (for enitre program)
-			{
-				System.out.println("quitting...");
-				running = false; 
-			}
-			else if(strInput.equals("t"))
-				//this is for testing variables
-			{
-				System.out.println("strInput: " + strInput);
-				System.out.println();
-				System.out.println("running: " + running);
-				System.out.println();
-				System.out.println(PlayerOne.deck[1]);
-				System.out.println();
-				System.out.println(PlayerTwo.deck[1]);
-				System.out.println();
-				System.out.println(PlayerOne.cardsDrawn);
-				System.out.println();
-				System.out.println(PlayerTwo.cardsDrawn);
-				System.out.println();
-				System.out.println(whosTurn);
-				System.out.println();
-				System.out.println("Player one's feild:");
-				System.out.println();
-				System.out.println("Gluttony:" + PlayerOne.amulet[1]);
-				System.out.println();
-				System.out.println("Sloth:" + PlayerTwo.amulet[2]);
-				System.out.println();
-				System.out.println("Envy:" + PlayerTwo.amulet[3]);
-				System.out.println();
-				System.out.println("Wrath:" + PlayerTwo.amulet[4]);
-				System.out.println();
-				System.out.println("Lust:" + PlayerTwo.amulet[5]);
-				System.out.println();
-				System.out.println("Player two's feild:");
-				System.out.println();
-				System.out.println("Gluttony:" + PlayerOne.amulet[1]);
-				System.out.println();
-				System.out.println("Sloth:" + PlayerOne.amulet[2]);
-				System.out.println();
-				System.out.println("Envy:" + PlayerOne.amulet[3]);
-				System.out.println();
-				System.out.println("Wrath:" + PlayerOne.amulet[4]);
-				System.out.println();
-				System.out.println("Lust:" + PlayerOne.amulet[5]);
-				System.out.println();
-			}
-			else if (strInput.equals("?"))
-				//help key
-			{
-				System.out.println("Help: 'q' to quit 'qg' to quit game but not program 'h' to veiw your hand 'hc' to see the number of cards in your hand 'p' to pass the turn(('t' to test and 'd' to draw. only for testing purposes))");
-			}
-			else if (strInput.equals("d") && playing == true)
-				// draws a card.. this is for testing
-			{
-				draw (true, whosTurn);
-			}
-			else if (strInput.equals("hc") && playing == true)
-				//tells the number of cards in your hand
-			{
-				if(whosTurn == 1)
-				{
-					System.out.println("You have " + PlayerOne.numInHand + " Card(s) in your hand");
-				}
-				else
-				{
-					System.out.println("You have " + PlayerTwo.numInHand + " Card(s) in your hand");
-				}
-			}
-			else if (strInput.equals("p") && playing == true)
-				//pass the turn key
-			{
-				System.out.println("passing the turn to player " + whosTurn);
-				playedACard = false;
-				if(whosTurn == 1)
-				{
-					System.out.println("passing the turn to player 2");
-					if(instantEffectCheck(1) == true)
-					{
-						crackWhat(1);
-					}
-					else if(instantEffectCheck(2) == true)
-					{
-						crackWhat(2);
-					}
-					whosTurn = 2;
-					draw(true, 2);
-					System.out.println("passed the turn to player " + whosTurn);
-					if(instantEffectCheck(1) == true)
-					{
-						crackWhat(1);
-					}
-					else if(instantEffectCheck(2) == true)
-					{
-						crackWhat(2);
-					}
-				}
-				else
-				{
-					System.out.println("passing the turn to player 1");
-					if(instantEffectCheck(2) == true)
-					{
-						crackWhat(2);
-					}
-					else if(instantEffectCheck(1) == true)
-					{
-						crackWhat(1);
-					}
-					whosTurn = 1;
-					draw(true, 1);
-					System.out.println("passed the turn to player " + whosTurn);
-					
-					if(instantEffectCheck(2) == true)
-					{
-						crackWhat(2);
-					}
-					else if(instantEffectCheck(1) == true)
-					{
-						crackWhat(1);
-					}
-				}
-			}
-			else if (strInput.equals("qg") && playing == true)
-				//key to quit the game not the program
-			{
-				playing = false;
+    /*
+     * creating player objects, the stack, declaring the 
+     * fact that its running, wheather its playing, 
+     * and whos turn it is (respectively).
+     */
+    static Player PlayerOne = new Player();
+    static Player PlayerTwo = new Player();
+    static int[][] theStack = new int[6][100];
+    static Boolean running = true;
+    static Boolean playing = false;
+    static Boolean playingACard = false;
+    static Boolean playedACard = false;
+    static int cardsInStack = 0;
+    static int whosTurn;
+    static Scanner input = new Scanner(System.in);
+    // just the scanner for new input
+    static String strInput;
+    //the string input
+    static int intInput; 
+    //the int input
+    static int secondIntInput;
+    //a second one for cracking
+    public static void main(String [] args)
+    {
+        /*
+         * Each gem has been assigned a number
+         * Gluttony = 1
+         * Sloth = 2
+         * Envy = 3
+         * Wrath = 4
+         * Lust = 5
+         */
+        System.out.println("initializing...");
+        System.out.println("initialized. type '?' for help and 'r' for rules");
+        while(running == true)
+        {
+            strInput = input.nextLine();
+            if(strInput.equals("S") && playing == false)
+            {
+                //Initializing the start of a game "S" being the start key
+                playing = true;
+                //let the program know the game is playing
+                whosTurn = randInt(1,2);
+                //randmoly select who goes first
+                PlayerOne.deck = initalizeDeck ();
+                System.out.println("shuffled deck for player one");
+                PlayerTwo.deck = initalizeDeck ();
+                System.out.println("shuffled deck for player two");
+                PlayerOne.hand = new int[7];
+                PlayerTwo.hand = new int[7];
+                PlayerOne.amulet = new int[6];
+                PlayerTwo.amulet = new int[6];
+                PlayerOne.discard = new int[6];
+                PlayerTwo.discard = new int[6];
+                System.out.println("initialized board for players");
+                draw(false, 1);
+                draw(false, 1);
+                draw(false, 1);
+                draw(false, 1);
+                draw(false, 1);
+                draw(false, 1);
+                draw(false, 1);
+                System.out.println("drew hand for player one");
+                draw(false, 2);
+                draw(false, 2);
+                draw(false, 2);
+                draw(false, 2);
+                draw(false, 2);
+                draw(false, 2);
+                draw(false, 2);
+                System.out.println("drew hand for player two");
+                System.out.println("It is player " + whosTurn + "'s turn");
+            }
+            else if (strInput.equals("h"))
+            {
+                veiwHand(whosTurn);
+            }
+            else if(strInput.equals("q"))
+            //quit key (for enitre program)
+            {
+                System.out.println("quitting...");
+                running = false; 
+            }
+            else if(strInput.equals("t"))
+            //this is for testing variables
+            {
+                System.out.println("strInput: " + strInput);
+                System.out.println();
+                System.out.println("running: " + running);
+                System.out.println();
+                System.out.println(PlayerOne.deck[1]);
+                System.out.println();
+                System.out.println(PlayerTwo.deck[1]);
+                System.out.println();
+                System.out.println(PlayerOne.cardsDrawn);
+                System.out.println();
+                System.out.println(PlayerTwo.cardsDrawn);
+                System.out.println();
+                System.out.println(whosTurn);
+                System.out.println();
+                System.out.println("Player one's feild:");
+                System.out.println();
+                System.out.println("Gluttony:" + PlayerOne.amulet[1]);
+                System.out.println();
+                System.out.println("Sloth:" + PlayerOne.amulet[2]);
+                System.out.println();
+                System.out.println("Envy:" + PlayerOne.amulet[3]);
+                System.out.println();
+                System.out.println("Wrath:" + PlayerOne.amulet[4]);
+                System.out.println();
+                System.out.println("Lust:" + PlayerOne.amulet[5]);
+                System.out.println();
+                System.out.println("Player two's feild:");
+                System.out.println();
+                System.out.println("Gluttony:" + PlayerTwo.amulet[1]);
+                System.out.println();
+                System.out.println("Sloth:" + PlayerTwo.amulet[2]);
+                System.out.println();
+                System.out.println("Envy:" + PlayerTwo.amulet[3]);
+                System.out.println();
+                System.out.println("Wrath:" + PlayerTwo.amulet[4]);
+                System.out.println();
+                System.out.println("Lust:" + PlayerTwo.amulet[5]);
+                System.out.println();
+            }
+            else if (strInput.equals("?"))
+            //help key
+            {
+                System.out.println("Help: 'q' to quit 'qg' to quit game but not program 'h' to veiw your hand 'hc' to see the number of cards in your hand 'p' to pass the turn(('t' to test and 'd' to draw. only for testing purposes))");
+            }
+            else if (strInput.equals("d") && playing == true)
+            // draws a card.. this is for testing
+            {
+                draw (true, whosTurn);
+            }
+            else if (strInput.equals("hc") && playing == true)
+            //tells the number of cards in your hand
+            {
+                if(whosTurn == 1)
+                {
+                    System.out.println("You have " + PlayerOne.numInHand + " Card(s) in your hand");
+                }
+                else
+                {
+                    System.out.println("You have " + PlayerTwo.numInHand + " Card(s) in your hand");
+                }
+            }
+            else if (strInput.equals("p") && playing == true)
+            //pass the turn key
+            {
+                playedACard = false;
+                if(whosTurn == 1)
+                {
+                    System.out.println("passing the turn to player 2");
+                    if(instantEffectCheck(1) == true)
+                    {
+                        crackWhat(1);
+                        resolveStack();
+                    }
+                    whosTurn = 2;
+                    draw(true, 2);
+                    System.out.println("passed the turn to player " + whosTurn);
+                    if(instantEffectCheck(2) == true)
+                    {
+                        crackWhat(2);
+                        resolveStack();
+                    }
+                }
+                else
+                {
+                    System.out.println("passing the turn to player 1");
+                    if(instantEffectCheck(2) == true)
+                    {
+                        crackWhat(2);
+                        resolveStack();
+                    }
+                    whosTurn = 1;
+                    draw(true, 1);
+                    System.out.println("passed the turn to player " + whosTurn);
+                    if(instantEffectCheck(1) == true)
+                    {
+                        crackWhat(1);
+                        resolveStack();
+                    }
+                }
 
-				System.out.println("quitted game.");
-			}
-			else if(strInput.equals("play") && playing == true)
-			{
-				//key to play a card
-				if(playedACard == false)
-				{ 
+            }
+            else if (strInput.equals("qg") && playing == true)
+            //key to quit the game not the program
+            {
+                playing = false;
 
-					playingACard = true; 
-					System.out.println("choose a gem to drop"); 
-					intInput = stringToInt(input.nextLine()); 
-					if(whosTurn == 1)
-					{
-						if(PlayerOne.hand[intInput] > 0)
-						{
-							//test to make sure they have the gem
-							// then taking it out of their hand and doing its effect
-							System.out.println("Player " + whosTurn + " is playing " + intToString(intInput));
+                System.out.println("quitted game.");
+            }
+            else if(strInput.equals("play") && playing == true)
+            {
+                //key to play a card
+                if(playedACard == false)
+                { 
 
-							PlayerOne.hand[intInput] --;
-							PlayerOne.amulet[intInput] ++;
-							play(intInput, 1);
-							cardsInAmu(1);
-						}
-						else if(intInput == 0)
-						{
-							System.out.println("Play cancelled");
-						}
-						else if (intInput == 6)
-						{
-							System.out.println("incorrect sytax, enter 'gluttony', 'sloth', 'envy', 'wrath', 'lust', or 'cancel'");
-						}
-						else
-						{
-							System.out.println("you dont have that gem!");
-						}
-					}
-					else
-					{
-						if(PlayerTwo.hand[intInput] > 0)
-						{
-							//test to make sure they have the gem
-							// then taking it out of their hand and doing its effect
-							System.out.println("Player " + whosTurn + " is playing " + intToString(intInput));
-							PlayerTwo.hand[intInput] --;
-							play(intInput, 2);
-							PlayerTwo.amulet[intInput] ++;
-							cardsInAmu(2);
-						}
-						else
-						{
-							System.out.println("you dont have that gem!");
-						} 
-					}
-					playedACard = true;
-				}
-				else
-				{
-				    System.out.println("You already played a gem this turn!");
-				}
-			}
-			else if(strInput.equals("push button") && playing == true)
-			{
-				//easter egg inside joke with sarah <3 
-				System.out.println("*kisses*"); 
-			}
-			else if(strInput.equals("g") || strInput.equals("s") || strInput.equals("e") || strInput.equals("w") || strInput.equals("l"))
-			{
-				//key for descriptions of the gems
-				description(strInput); 
-			}
-			else
-			{
-				//error message when the player enters a non-exostand command or trys to use a caommand that cant be used at the time
-				System.out.println("error: unknown command or command unusable in current state");
-			}
-		}
-		System.out.println("quitted.");
-	}
-	public static int[] initalizeDeck ()
-	{
-		//This function returns a shuffled deck
-		int[] deck = {00, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		Boolean initalizingDeck = true;
-		int cardsAdded = 0;
-		int gInDeck = 0;
-		int sInDeck = 0;
-		int eInDeck = 0;
-		int wInDeck = 0;
-		int lInDeck = 0;
-		/*
-		 * Gluttony = 1
-		 * Sloth = 2
-		 * Envy = 3
-		 * Wrath = 4
-		 * Lust = 5
-		 */
-		while(initalizingDeck == true)
-		{
-			int rInt = randInt(1, 5);
-			if (gInDeck == 7 && sInDeck == 7 && eInDeck == 7 && wInDeck == 7 && lInDeck == 7)
-				//runs the loop until each card has been put in 7 times
-			{
-				initalizingDeck = false;
-			}
-			else if (rInt == 1 && gInDeck < 7)
-				//if the random tell it to & there hasnt been 7 gluttony already, it makes the next value gluttony
-			{
-				deck[1 + cardsAdded] = 1;
-				gInDeck ++;
-				cardsAdded ++;
-			}
-			else if (rInt == 2 && sInDeck < 7)
-				//if the random tell it to & there hasnt been 7 sloth already, it makes the next value sloth
-			{
-				deck[1 + cardsAdded] = 2;
-				sInDeck ++;
-				cardsAdded ++;
-			}
-			else if (rInt == 3 && eInDeck < 7)
-				//if the random tell it to & there hasnt been 7 envy already, it makes the next value envy
-			{
-				deck[1 + cardsAdded] = 3;
-				eInDeck ++;
-				cardsAdded ++;
-			}
-			else if (rInt == 4 && wInDeck < 7)
-				//if the random tell it to & there hasnt been 7 wrath already, it makes the next value wrath
-			{
-				deck[1 + cardsAdded] = 4;
-				wInDeck ++;
-				cardsAdded ++;
-			}
-			else if (rInt == 5 && lInDeck < 7)
-				//if the random tell it to & there hasnt been 7 lust already, it makes the next value lust
-			{
-				deck[1 + cardsAdded] = 5;
-				lInDeck ++;
-				cardsAdded ++;
-			}            
-		}
-		return deck;
-	}
-	public static void play(int card, int player)
-		//this funtion plays a card(card) by player(player)
-	{
-		if(card == 1)
-		{
-			//plays gluttony (a random effect)
-			System.out.println("Your random effect is:");
-			int effect = randInt(2,5);
-			// the next part just tells the player what effect they got
-			if(effect == 2)
-			{
-				System.out.println("Sloth");
-			}
-			else if(effect == 3)
-			{
-				System.out.println("Envy");
-			}
-			else if(effect == 4)
-			{
-				System.out.println("Wrath");
-			}
-			else if(effect == 5)
-			{
-				System.out.println("Lust");
-			}
-			play(effect, player);
-		}
-		else if(card == 2)
-		{
-			//plays sloth, just runs the draw function
-			draw(true, player);
+                    playingACard = true; 
+                    System.out.println("choose a gem to drop"); 
+                    intInput = stringToInt(input.nextLine()); 
+                    if(whosTurn == 1)
+                    {
+                        if(intInput == 6)
+                        {
+                            veiwHand(whosTurn);
+                        }
+                        else if(PlayerOne.hand[intInput] > 0)
+                        {
+                            //test to make sure they have the gem
+                            // then taking it out of their hand and doing its effect
+                            System.out.println("Player " + whosTurn + " is playing " + intToString(intInput));
+                            PlayerOne.hand[intInput] --;
+                            addCardToStack(intInput, 1, 0, 0);
+                            resolveStack();
+                            cardsInAmu(1);
+                            playedACard = true;
+                        }
+                        else if(intInput == 0)
+                        {
+                            System.out.println("Play cancelled");
+                        }
+                        else if (intInput == -1)
+                        {
+                            System.out.println("incorrect sytax, enter 'gluttony', 'sloth', 'envy', 'wrath', 'lust', or 'cancel'");
+                        }
+                        else
+                        {
+                            System.out.println("you dont have that gem!");
+                        }
+                    }
+                    else
+                    {
+                        if(intInput == 6)
+                        {
+                            veiwHand(whosTurn);
+                        }
+                        else if(PlayerTwo.hand[intInput] > 0)
+                        {
+                            //test to make sure they have the gem
+                            // then taking it out of their hand and doing its effect
+                            System.out.println("Player " + whosTurn + " is playing " + intToString(intInput));
+                            PlayerTwo.hand[intInput] --;
+                            addCardToStack(intInput, 2, 0, 0);
+                            resolveStack();
+                            cardsInAmu(2);
+                            playedACard = true;
+                        }
+                        else
+                        {
+                            System.out.println("you dont have that gem!");
+                        } 
+                    }
 
-		}
-		else if(card == 3)
-		{
-			// plays envy 
-			if(player == 1)
-			{
-				if(PlayerTwo.numInHand > 0)
-				{
-					//check 
-					System.out.println("Opponents hand:");
-					System.out.println();
-					System.out.println("Gluttony:" + PlayerTwo.hand[1]);
-					System.out.println();
-					System.out.println("Sloth:" + PlayerTwo.hand[2]);
-					System.out.println();
-					System.out.println("Envy:" + PlayerTwo.hand[3]);
-					System.out.println();
-					System.out.println("Wrath:" + PlayerTwo.hand[4]);
-					System.out.println();
-					System.out.println("Lust:" + PlayerTwo.hand[5]);
-					System.out.println();
-					System.out.println("choose a gem for the opponent to discard");
-					intInput = stringToInt(input.nextLine());
+                }
+                else
+                {
+                    System.out.println("You already played a gem this turn!");
+                }
+            }
+            else if(strInput.equals("push button") && playing == true)
+            {
+                //easter egg inside joke with sarah <3 
+                System.out.println("*kisses*"); 
+            }
+            else if(strInput.equals("g") || strInput.equals("s") || strInput.equals("e") || strInput.equals("w") || strInput.equals("l"))
+            {
+                //key for descriptions of the gems
+                description(strInput); 
+            }
+            else
+            {
+                //error message when the player enters a non-exostand command or trys to use a caommand that cant be used at the time
+                System.out.println("error: unknown command or command unusable in current state");
+            }
+        }
+        System.out.println("quitted.");
+    }
 
-					if(PlayerTwo.hand[intInput] > 0)
-					{
-						PlayerTwo.hand[intInput] --; 
-						PlayerTwo.discard[intInput] ++;
-						cardsInDiscard(2);
-						System.out.println("Player two discarded: " + intToString(intInput));
-					}
-					else
-					{
-						System.out.println("the opponent doesnt have that gem!");
-						play(3, 1);
-					}
-				}
-				else
-				{
-					System.out.println("The opponent has no cards in thier hand! No effect");
-				}               
-			}
-			else
-			{
-				if(PlayerOne.numInHand > 0)
-				{
-					System.out.println("Opponents hand:");
-					System.out.println();
-					System.out.println("Gluttony:" + PlayerOne.hand[1]);
-					System.out.println();
-					System.out.println("Sloth:" + PlayerOne.hand[2]);
-					System.out.println();
-					System.out.println("Envy:" + PlayerOne.hand[3]);
-					System.out.println();
-					System.out.println("Wrath:" + PlayerOne.hand[4]);
-					System.out.println();
-					System.out.println("Lust:" + PlayerOne.hand[5]);
-					System.out.println();
-					System.out.println("choose a gem for the opponent to discard");
-					intInput = stringToInt(input.nextLine());
+    public static int[] initalizeDeck ()
+    {
+        //This function returns a shuffled deck
+        int[] deck = {00, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        Boolean initalizingDeck = true;
+        int cardsAdded = 0;
+        int gInDeck = 0;
+        int sInDeck = 0;
+        int eInDeck = 0;
+        int wInDeck = 0;
+        int lInDeck = 0;
+        /*
+         * Gluttony = 1
+         * Sloth = 2
+         * Envy = 3
+         * Wrath = 4
+         * Lust = 5
+         */
+        while(initalizingDeck == true)
+        {
+            int rInt = randInt(1, 5);
+            if (gInDeck == 7 && sInDeck == 7 && eInDeck == 7 && wInDeck == 7 && lInDeck == 7)
+            //runs the loop until each card has been put in 7 times
+            {
+                initalizingDeck = false;
+            }
+            else if (rInt == 1 && gInDeck < 7)
+            //if the random tell it to & there hasnt been 7 gluttony already, it makes the next value gluttony
+            {
+                deck[1 + cardsAdded] = 1;
+                gInDeck ++;
+                cardsAdded ++;
+            }
+            else if (rInt == 2 && sInDeck < 7)
+            //if the random tell it to & there hasnt been 7 sloth already, it makes the next value sloth
+            {
+                deck[1 + cardsAdded] = 2;
+                sInDeck ++;
+                cardsAdded ++;
+            }
+            else if (rInt == 3 && eInDeck < 7)
+            //if the random tell it to & there hasnt been 7 envy already, it makes the next value envy
+            {
+                deck[1 + cardsAdded] = 3;
+                eInDeck ++;
+                cardsAdded ++;
+            }
+            else if (rInt == 4 && wInDeck < 7)
+            //if the random tell it to & there hasnt been 7 wrath already, it makes the next value wrath
+            {
+                deck[1 + cardsAdded] = 4;
+                wInDeck ++;
+                cardsAdded ++;
+            }
+            else if (rInt == 5 && lInDeck < 7)
+            //if the random tell it to & there hasnt been 7 lust already, it makes the next value lust
+            {
+                deck[1 + cardsAdded] = 5;
+                lInDeck ++;
+                cardsAdded ++;
+            }            
+        }
+        return deck;
+    }
 
-					if(PlayerOne.hand[intInput] > 0)
-					{
-						PlayerOne.hand[intInput] --;
-						PlayerOne.discard[intInput] ++;
-						cardsInDiscard(1);
-						System.out.println("Player one discarded: " + intToString(intInput));
-					}
-					else
-					{
-						System.out.println("the opponent doesnt have that gem!");
-						play(3, 2); 
-					}
-				}
-				else 
-				{
-					System.out.println("The opponent has no cards in thier hand! No effect");
-				}
-			}
-		}
-		else if(card == 4)
-		{
-			if(player == 1)
-			{
-				cardsInAmu(2);
-				if (PlayerTwo.numInAmu > 0)
-				{
-					System.out.println("Opponents amulet:");
-					System.out.println();
-					System.out.println("Gluttony:" + PlayerOne.amulet[1]);
-					System.out.println();
-					System.out.println("Sloth:" + PlayerTwo.amulet[2]);
-					System.out.println();
-					System.out.println("Envy:" + PlayerTwo.amulet[3]);
-					System.out.println();
-					System.out.println("Wrath:" + PlayerTwo.amulet[4]);
-					System.out.println();
-					System.out.println("Lust:" + PlayerTwo.amulet[5]);
-					System.out.println();
-					System.out.println("chose a gem to smash");
-					intInput = stringToInt(input.nextLine());
-					if(PlayerTwo.amulet[intInput] > 0)
-					{
-						PlayerTwo.amulet[intInput] --; 
-						PlayerTwo.discard[intInput] ++;
-						cardsInDiscard(2);
-						System.out.println("Player two's " + intToString(intInput) + " got destroyed");
-					}
-					else
-					{
-						System.out.println("the opponent doesnt have that gem!");
-						play(4, 1);
-					}
-				}
-				else
-				{
-					System.out.println("The opponent has no cards in thier amulet! No effect"); 
-				}
-			}
-			else
-			{
-				cardsInAmu(1);
-				if(PlayerOne.numInAmu > 0)
-				{
-					System.out.println("Opponents amulet:");
-					System.out.println();
-					System.out.println("Gluttony:" + PlayerOne.amulet[1]);
-					System.out.println();
-					System.out.println("Sloth:" + PlayerOne.amulet[2]);
-					System.out.println();
-					System.out.println("Envy:" + PlayerOne.amulet[3]);
-					System.out.println();
-					System.out.println("Wrath:" + PlayerOne.amulet[4]);
-					System.out.println();
-					System.out.println("Lust:" + PlayerOne.amulet[5]);
-					System.out.println();
-					System.out.println("chose a gem to smash");
-					intInput = stringToInt(input.nextLine());
-					if(PlayerOne.amulet[intInput] > 0)
-					{
-						PlayerOne.amulet[intInput] --; 
-						PlayerOne.discard[intInput] ++;
-						cardsInDiscard(1);
-						System.out.println("Player ones's " + intToString(intInput) + " got destroyed");
-					}
-					else
-					{
-						System.out.println("the opponent doesnt have that gem!");
-						play(4, 2);
-					}
-				}
-				else 
-				{
-					System.out.println("The opponent has no cards in thier amulet! No effect"); 
-				}
-			}
-		}
-		else if(card == 5)
-		{
-			if(player == 1)
-			{
-				cardsInDiscard(1);
-				if(PlayerOne.numInDiscard > 0)
-				{
-					System.out.println("Opponents amulet:");
-					System.out.println();
-					System.out.println("Gluttony:" + PlayerOne.discard[1]);
-					System.out.println();
-					System.out.println("Sloth:" + PlayerOne.discard[2]);
-					System.out.println();
-					System.out.println("Envy:" + PlayerOne.discard[3]);
-					System.out.println();
-					System.out.println("Wrath:" + PlayerOne.discard[4]);
-					System.out.println();
-					System.out.println("Lust:" + PlayerOne.discard[5]);
-					System.out.println();
-					System.out.println("chose a gem to get back");
-					intInput = stringToInt(input.nextLine());
-					if(PlayerOne.discard[intInput] > 0)
-					{
-						PlayerOne.discard[intInput] --;
-						PlayerOne.hand[intInput] ++;
-						cardsInHand(1);
-						System.out.println("Player one's " + intToString(intInput) + " got put back in his hand");
-					}
-					else
-					{
-						System.out.println("You don't have that gem in your discard!");
-						play(5, 1);
-					}
-				}
-				else
-				{
-					System.out.print("You have no cards in your discard! No effect");
-				}
-			}
-			else
-			{
-				cardsInDiscard(2);
-				if(PlayerTwo.numInDiscard > 0)
-				{
-					System.out.println("Opponents amulet:");
-					System.out.println();
-					System.out.println("Gluttony:" + PlayerTwo.discard[1]);
-					System.out.println();
-					System.out.println("Sloth:" + PlayerTwo.discard[2]);
-					System.out.println();
-					System.out.println("Envy:" + PlayerTwo.discard[3]);
-					System.out.println();
-					System.out.println("Wrath:" + PlayerTwo.discard[4]);
-					System.out.println();
-					System.out.println("Lust:" + PlayerTwo.discard[5]);
-					System.out.println();
-					System.out.println("chose a gem to get back");
-					intInput = stringToInt(input.nextLine());
-					if(PlayerTwo.discard[intInput] > 0)
-					{
-						PlayerTwo.discard[intInput] --;
-						PlayerTwo.hand[intInput] ++;
-						cardsInHand(2);
-						System.out.println("Player two's " + intToString(intInput) + " got put back in his hand");
-					}
-					else
-					{
-						System.out.println("You don't have that gem in your discard!");
-						play(5, 2);
-					}
-				}
-				else
-				{
-					System.out.print("You have no cards in your discard! No effect");
-				}
-			}
-		}
-		else
-		{
-			System.out.println("That's not a card. type 'cancel' to cancel");
-			play(card, player);
-		}
-		playingACard = false;
-	}
-	public static void crack(int card, int player)
-	{
+    public static void play(int card, int player)
+    //this funtion plays a card(card) by player(player)
+    {
+        if(card == 1)
+        {
+            //plays gluttony (a random effect)
+            System.out.println("Your random effect is:");
+            int effect = randInt(2,5);
+            // the next part just tells the player what effect they got
+            if(effect == 2)
+            {
+                System.out.println("Sloth");
+            }
+            else if(effect == 3)
+            {
+                System.out.println("Envy");
+            }
+            else if(effect == 4)
+            {
+                System.out.println("Wrath");
+            }
+            else if(effect == 5)
+            {
+                System.out.println("Lust");
+            }
+            play(effect, player);
+        }
+        else if(card == 2)
+        {
+            //plays sloth, just runs the draw function
+            draw(true, player);
 
-	}
-	public static void draw (Boolean display, int player)
-	{
-		if(player == 1)
-		{
-			if(display == true)
-			{
-				System.out.println("You drew:");
-				if( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 1)
-				{
-					PlayerOne.hand[1] ++;
-					PlayerOne.cardsDrawn ++;
-					System.out.println("Gluttony");
-				}
-				else if ( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 2)
-				{
-					PlayerOne.hand[2] ++; 
-					System.out.println("Sloth");
-					PlayerOne.cardsDrawn ++;
-				}
-				else if ( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 3)
-				{
-					PlayerOne.hand[3] ++; 
-					System.out.println("Envy");
-					PlayerOne.cardsDrawn ++;
-				}
-				else if ( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 4)
-				{
-					PlayerOne.hand[4] ++; 
-					System.out.println("Wrath");
-					PlayerOne.cardsDrawn ++;
-				}
-				else if ( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 5)
-				{
-					PlayerOne.hand[5] ++;
-					System.out.println("Lust");
-					PlayerOne.cardsDrawn ++;
-				}
-			}
-			else
-			{
-				if( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 1)
-				{
-					PlayerOne.hand[1] ++; 
-					PlayerOne.cardsDrawn ++;
-				}
-				else if ( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 2)
-				{
-					PlayerOne.hand[2] ++; 
-					PlayerOne.cardsDrawn ++;
-				}
-				else if ( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 3)
-				{
-					PlayerOne.hand[3] ++; 
-					PlayerOne.cardsDrawn ++;
-				}
-				else if ( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 4)
-				{
-					PlayerOne.hand[4] ++; 
-					PlayerOne.cardsDrawn ++;
-				}
-				else if ( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 5)
-				{
-					PlayerOne.hand[5] ++;
-					PlayerOne.cardsDrawn ++;
-				}    
-			}
-			cardsInHand(1);
-		}
-		else 
-		{
-			if(display == true)
-			{
-				System.out.println("You drew:");
-				if( PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 1)
-				{
-					PlayerTwo.hand[1] ++; 
-					PlayerTwo.cardsDrawn ++;
-					System.out.println("Gluttony");
-				}
-				else if ( PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 2)
-				{
-					PlayerTwo.hand[2] ++; 
-					System.out.println("Sloth");
-					PlayerTwo.cardsDrawn ++;
-				}
-				else if ( PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 3)
-				{
-					PlayerTwo.hand[3] ++; 
-					System.out.println("Envy");
-					PlayerTwo.cardsDrawn ++;
-				}
-				else if ( PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 4)
-				{
-					PlayerTwo.hand[4] ++; 
-					System.out.println("Wrath");
-					PlayerTwo.cardsDrawn ++;
-				}
-				else if ( PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 5)
-				{
-					PlayerTwo.hand[5] ++;
-					System.out.println("Lust");
-					PlayerTwo.cardsDrawn ++;
-				}
-			}
-			else
-			{
-				if( PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 1)
-				{
-					PlayerTwo.hand[1] ++; 
-					PlayerTwo.cardsDrawn ++;
-				}
-				else if ( PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 2)
-				{
-					PlayerTwo.hand[2] ++; 
-					PlayerTwo.cardsDrawn ++;
-				}
-				else if ( PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 3)
-				{
-					PlayerTwo.hand[3] ++; 
-					PlayerTwo.cardsDrawn ++;
-				}
-				else if ( PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 4)
-				{
-					PlayerTwo.hand[4] ++; 
-					PlayerTwo.cardsDrawn ++;
-				}
-				else if ( PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 5)
-				{
-					PlayerTwo.hand[5] ++;
-					PlayerTwo.cardsDrawn ++;
-				}    
-			}
-			cardsInHand(2);
-		}
-	} 
-	public static void cardsInHand (int player)
-	{
-		if(player == 1)
-		{
-			PlayerOne.numInHand = PlayerOne.hand[1] + PlayerOne.hand[2] + PlayerOne.hand[3] + PlayerOne.hand[4] + PlayerOne.hand[5];
-		}
-		else
-		{
-			PlayerTwo.numInHand = PlayerTwo.hand[1] + PlayerTwo.hand[2] + PlayerTwo.hand[3] + PlayerTwo.hand[4] + PlayerTwo.hand[5]; 
-		}
-	}
-	public static void cardsInAmu(int player)
-	{
-		if(player == 1)
-		{
-			PlayerOne.numInAmu = PlayerOne.amulet[1] + PlayerOne.amulet[2] + PlayerOne.amulet[3] + PlayerOne.amulet[4] + PlayerOne.amulet[5];
-		}
-		else
-		{
-			PlayerTwo.numInAmu = PlayerTwo.amulet[1] + PlayerTwo.amulet[2] + PlayerTwo.amulet[3] + PlayerTwo.amulet[4] + PlayerTwo.amulet[5];
-		}
-	}
-	public static void cardsInDiscard(int player)
-	{
-		if(player == 1)
-		{
-			PlayerOne.numInDiscard = PlayerOne.discard[1] + PlayerOne.discard[2] + PlayerOne.discard[3] + PlayerOne.discard[4] + PlayerOne.discard[5];
-		}
-		else
-		{
-			PlayerTwo.numInDiscard= PlayerTwo.discard[1] + PlayerTwo.discard[2] + PlayerTwo.discard[3] + PlayerTwo.discard[4] + PlayerTwo.discard[5];
-		}
-	}
-	public static void description(String card)
-	{
-		if(card.equals("g"))
-		{
-			System.out.println("The Gem of Gluttony");
-			System.out.println("When you add this gem to your amulet it becomes so eager to consume energy");
-			System.out.println("that it will grab any enrgy it can get its hands on and this causes a realese");
-			System.out.println("of variable energy and produces a random effect. When you crack it, it takes a");
-			System.out.println("gem from your pile and puts it on your amulet");
-		}
-		else if(card.equals("s"))
-		{
-			System.out.println("The Gem of Sloth");
-			System.out.println("This gem doesn't want to do much when it is added to your amulet, it will give you");
-			System.out.println("a new gem from your pile to do the work for it. When you crack it, it spreads out");
-			System.out.println("it's lazyness and makes other effects stop and stops gems before they even get to");
-			System.out.println("their amulet, they become so tired and done with work they go to the discard instead");
-		}
-		else if(card.equals("e"))
-		{
-			System.out.println("The Gem of Envy");
-			System.out.println("The instant this gem enters your amulet it sees the opponents gem rack and wants what");
-			System.out.println("it doesn't have, it'll try to steal a gem from their rack, but it doesnt have enough");
-			System.out.println("energy to steal it on it's own, so the gem it wanted will just go to the discard. when");
-			System.out.println("you crack it however, it has enough energy to steal the card and add it to your rack");
-		}
-		else if(card.equals("w"))
-		{
-			System.out.println("The Gem of Wrath");
-			System.out.println("When this gem is put in your amulet it exausts all of it's energy in an intant with");
-			System.out.println("a barrage of rage. This realease of anger can destroy a gem in an opponents amulet");
-			System.out.println("When you give it more energy by craking it however, the realese will destroy all gems");
-			System.out.println("of one type.");
-		}
-		else if(card.equals("l"))
-		{
-			System.out.println("The Gem of Lust");
-			System.out.println("This gem needs its fellow gems back with it, and it'll do whatever it can to get them");
-			System.out.println("back. When it's put in your amulet it will put a gem from your discard in your rack in");
-			System.out.println("hopes you will reunite the two of them. When you crack it, it uses the energy from the");
-			System.out.println("other gem to sacrifice itself in order to get it's love back. You can bring another gem");
-			System.out.println("in your discard into your amulet");
-		}
-	}
-	public static String intToString(int code)
-	{
-		String name = "not a card";
-		if(code == 1)
-		{
-			name = "Gluttony";
-		}
-		else if (code == 2)
-		{
-			name = "Sloth";
-		}
-		else if (code == 3)
-		{
-			name = "Envy";
-		}
-		else if (code == 4)
-		{
-			name = "Wrath";
-		}
-		else if (code == 5)
-		{
-			name = "Lust";
-		}
-		return name;
-	}
-	public static int stringToInt(String name)
-	{
-		int code = 6;
-		if(name.equals("gluttony"))
-		{
-			code = 1;
-		}
-		else if(name.equals("sloth"))
-		{
-			code = 2;
-		}
-		else if(name.equals("envy"))
-		{
-			code = 3;
-		}
-		else if(name.equals("wrath"))
-		{
-			code = 4;
-		}
-		else if(name.equals("lust"))
-		{
-			code = 5;
-		}
-		else if (name.equals("cancel"))
-		{
-			code = 0;
-		}
-		return code;
-	}
-	public static Boolean instantEffectCheck (int player)
-	{
-		Boolean response;
-		System.out.println("Player " + player + " do you have a response? (y/n)");
-		strInput = input.nextLine();   
-		if(strInput.equals("y"))
-		{
-			System.out.println("Player " + player + " responds.");
-			response = true;
-		}
-		else if (strInput.equals("n"))
-		{
-			response = false;
-		}
-		else
-		{
-			System.out.println("Answer with 'y' or 'n'");
-			response = instantEffectCheck(player);
-		}
-		return response;
-	}
-	public static void crackWhat(int player)
-	{
-		System.out.println("What gem are you cracking?");
-		intInput = stringToInt(input.nextLine()); 
-		crack(intInput, player);
-	}
-	public static void reveal(int player, String zone)
-	{
+        }
+        else if(card == 3)
+        {
+            // plays envy 
+            if(player == 1)
+            {
+                if(PlayerTwo.numInHand > 0)
+                {
+                    //check 
+                    System.out.println("Opponents hand:");
+                    System.out.println();
+                    System.out.println("Gluttony:" + PlayerTwo.hand[1]);
+                    System.out.println();
+                    System.out.println("Sloth:" + PlayerTwo.hand[2]);
+                    System.out.println();
+                    System.out.println("Envy:" + PlayerTwo.hand[3]);
+                    System.out.println();
+                    System.out.println("Wrath:" + PlayerTwo.hand[4]);
+                    System.out.println();
+                    System.out.println("Lust:" + PlayerTwo.hand[5]);
+                    System.out.println();
+                    System.out.println("choose a gem for the opponent to discard");
+                    intInput = stringToInt(input.nextLine());
+                    if(intInput == 6)
+                    {
+                        veiwHand(player);
+                        play(3, 1);
+                    }
+                    else if(PlayerTwo.hand[intInput] > 0)
+                    {
+                        PlayerTwo.hand[intInput] --; 
+                        PlayerTwo.discard[intInput] ++;
+                        cardsInDiscard(2);
+                        System.out.println("Player two discarded: " + intToString(intInput));
+                    }
+                    else
+                    {
+                        System.out.println("the opponent doesnt have that gem!");
+                        play(3, 1);
+                    }
+                }
+                else
+                {
+                    System.out.println("The opponent has no cards in thier hand! No effect");
+                }               
+            }
+            else
+            {
+                if(PlayerOne.numInHand > 0)
+                {
+                    System.out.println("Opponents hand:");
+                    System.out.println();
+                    System.out.println("Gluttony:" + PlayerOne.hand[1]);
+                    System.out.println();
+                    System.out.println("Sloth:" + PlayerOne.hand[2]);
+                    System.out.println();
+                    System.out.println("Envy:" + PlayerOne.hand[3]);
+                    System.out.println();
+                    System.out.println("Wrath:" + PlayerOne.hand[4]);
+                    System.out.println();
+                    System.out.println("Lust:" + PlayerOne.hand[5]);
+                    System.out.println();
+                    System.out.println("choose a gem for the opponent to discard");
+                    intInput = stringToInt(input.nextLine());
+                    if(intInput == 6)
+                    {
+                        veiwHand(player);
+                        play(3, 2);
+                    }
+                    else if(PlayerOne.hand[intInput] > 0)
+                    {
+                        PlayerOne.hand[intInput] --;
+                        PlayerOne.discard[intInput] ++;
+                        cardsInDiscard(1);
+                        System.out.println("Player one discarded: " + intToString(intInput));
+                    }
+                    else
+                    {
+                        System.out.println("the opponent doesnt have that gem!");
+                        play(3, 2); 
+                    }
+                }
+                else 
+                {
+                    System.out.println("The opponent has no cards in thier hand! No effect");
+                }
+            }
+        }
+        else if(card == 4)
+        {
+            if(player == 1)
+            {
+                cardsInAmu(2);
+                if (PlayerTwo.numInAmu > 0)
+                {
+                    System.out.println("Opponents amulet:");
+                    System.out.println();
+                    System.out.println("Gluttony:" + PlayerTwo.amulet[1]);
+                    System.out.println();
+                    System.out.println("Sloth:" + PlayerTwo.amulet[2]);
+                    System.out.println();
+                    System.out.println("Envy:" + PlayerTwo.amulet[3]);
+                    System.out.println();
+                    System.out.println("Wrath:" + PlayerTwo.amulet[4]);
+                    System.out.println();
+                    System.out.println("Lust:" + PlayerTwo.amulet[5]);
+                    System.out.println();
+                    System.out.println("chose a gem to smash");
+                    intInput = stringToInt(input.nextLine());
+                    if(intInput == 6)
+                    {
+                        veiwHand(player);
+                        play(4, 1);
+                    }
+                    else if(PlayerTwo.amulet[intInput] > 0)
+                    {
+                        PlayerTwo.amulet[intInput] --; 
+                        PlayerTwo.discard[intInput] ++;
+                        cardsInDiscard(2);
+                        System.out.println("Player two's " + intToString(intInput) + " got destroyed");
+                    }
+                    else
+                    {
+                        System.out.println("the opponent doesnt have that gem!");
+                        play(4, 1);
+                    }
+                }
+                else
+                {
+                    System.out.println("The opponent has no cards in thier amulet! No effect"); 
+                }
+            }
+            else
+            {
+                cardsInAmu(1);
+                if(PlayerOne.numInAmu > 0)
+                {
+                    System.out.println("Opponents amulet:");
+                    System.out.println();
+                    System.out.println("Gluttony:" + PlayerOne.amulet[1]);
+                    System.out.println();
+                    System.out.println("Sloth:" + PlayerOne.amulet[2]);
+                    System.out.println();
+                    System.out.println("Envy:" + PlayerOne.amulet[3]);
+                    System.out.println();
+                    System.out.println("Wrath:" + PlayerOne.amulet[4]);
+                    System.out.println();
+                    System.out.println("Lust:" + PlayerOne.amulet[5]);
+                    System.out.println();
+                    System.out.println("chose a gem to smash");
+                    intInput = stringToInt(input.nextLine());
+                    if(intInput == 6)
+                    {
+                        veiwHand(player);
+                        play(4, 2);
+                    }
+                    else if(PlayerOne.amulet[intInput] > 0)
+                    {
+                        PlayerOne.amulet[intInput] --; 
+                        PlayerOne.discard[intInput] ++;
+                        cardsInDiscard(1);
+                        System.out.println("Player ones's " + intToString(intInput) + " got destroyed");
+                    }
+                    else
+                    {
+                        System.out.println("the opponent doesnt have that gem!");
+                        play(4, 2);
+                    }
+                }
+                else 
+                {
+                    System.out.println("The opponent has no cards in thier amulet! No effect"); 
+                }
+            }
+        }
+        else if(card == 5)
+        {
+            if(player == 1)
+            {
+                cardsInDiscard(1);
+                if(PlayerOne.numInDiscard > 0)
+                {
+                    System.out.println("Opponents amulet:");
+                    System.out.println();
+                    System.out.println("Gluttony:" + PlayerOne.discard[1]);
+                    System.out.println();
+                    System.out.println("Sloth:" + PlayerOne.discard[2]);
+                    System.out.println();
+                    System.out.println("Envy:" + PlayerOne.discard[3]);
+                    System.out.println();
+                    System.out.println("Wrath:" + PlayerOne.discard[4]);
+                    System.out.println();
+                    System.out.println("Lust:" + PlayerOne.discard[5]);
+                    System.out.println();
+                    System.out.println("chose a gem to get back");
+                    intInput = stringToInt(input.nextLine());
+                    if(intInput == 6)
+                    {
+                        veiwHand(player);
+                        play(5, 1);
+                    }
+                    else if(PlayerOne.discard[intInput] > 0)
+                    {
+                        PlayerOne.discard[intInput] --;
+                        PlayerOne.hand[intInput] ++;
+                        cardsInHand(1);
+                        System.out.println("Player one's " + intToString(intInput) + " got put back in his hand");
+                    }
+                    else
+                    {
+                        System.out.println("You don't have that gem in your discard!");
+                        play(5, 1);
+                    }
+                }
+                else
+                {
+                    System.out.print("You have no cards in your discard! No effect");
+                }
+            }
+            else
+            {
+                cardsInDiscard(2);
+                if(PlayerTwo.numInDiscard > 0)
+                {
+                    System.out.println("Opponents amulet:");
+                    System.out.println();
+                    System.out.println("Gluttony:" + PlayerTwo.discard[1]);
+                    System.out.println();
+                    System.out.println("Sloth:" + PlayerTwo.discard[2]);
+                    System.out.println();
+                    System.out.println("Envy:" + PlayerTwo.discard[3]);
+                    System.out.println();
+                    System.out.println("Wrath:" + PlayerTwo.discard[4]);
+                    System.out.println();
+                    System.out.println("Lust:" + PlayerTwo.discard[5]);
+                    System.out.println();
+                    System.out.println("chose a gem to get back");
+                    intInput = stringToInt(input.nextLine());
+                    if(intInput == 6)
+                    {
+                        veiwHand(player);
+                        play(5, 2);
+                    }
+                    else if(PlayerTwo.discard[intInput] > 0)
+                    {
+                        PlayerTwo.discard[intInput] --;
+                        PlayerTwo.hand[intInput] ++;
+                        cardsInHand(2);
+                        System.out.println("Player two's " + intToString(intInput) + " got put back in his hand");
+                    }
+                    else
+                    {
+                        System.out.println("You don't have that gem in your discard!");
+                        play(5, 2);
+                    }
+                }
+                else
+                {
+                    System.out.print("You have no cards in your discard! No effect");
+                }
+            }
+        }
+        else
+        {
+            System.out.println("That's not a card. type 'cancel' to cancel");
+            play(card, player);
+        }
+        playingACard = false;
+    }
 
-	}
-	public static int randInt(int min, int max) 
-	{
-		// Usually this can be a field rather than a method variable
-		Random rand = new Random();
+    public static void crack(int card, int player)
+    {
+        if(player == 1)
+        {
+            if(card == 1)
+            {
+                if(PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 1)
+                {
+                    System.out.println("player one played: gluttony");
+                    PlayerOne.amulet[1] ++;
+                    play(1, 1);
+                }
+                else if (PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 2)
+                {
+                    System.out.println("player one played: sloth");
+                    PlayerOne.amulet[2] ++; 
+                    play(2, 1);
+                }
+                else if (PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 3)
+                {
+                    System.out.println("player one played: envy");
+                    PlayerOne.amulet[3] ++; 
+                    play(3, 1);
+                }
+                else if (PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 4)
+                {
+                    System.out.println("player one played: wrath");
+                    PlayerOne.amulet[4] ++; 
+                    play(4, 1);
+                }
+                else if (PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 5)
+                {
+                    System.out.println("player one played: lust");
+                    PlayerOne.amulet[5] ++; 
+                    play(5, 1);
+                }
+            }
+            else if(card == 2)
+            {
+                theStack[4][cardsInStack - 1] = 1;
+            }
+            else if(card == 3)
+            {
+                cardsInHand(2);
+                if(PlayerTwo.numInHand > 0)
+                {
+                    //check 
+                    System.out.println("Opponents hand:");
+                    System.out.println();
+                    System.out.println("Gluttony:" + PlayerTwo.hand[1]);
+                    System.out.println();
+                    System.out.println("Sloth:" + PlayerTwo.hand[2]);
+                    System.out.println();
+                    System.out.println("Envy:" + PlayerTwo.hand[3]);
+                    System.out.println();
+                    System.out.println("Wrath:" + PlayerTwo.hand[4]);
+                    System.out.println();
+                    System.out.println("Lust:" + PlayerTwo.hand[5]);
+                    System.out.println();
+                    System.out.println("choose a gem for the opponent to discard");
+                    intInput = stringToInt(input.nextLine());
+                    if(intInput == 6)
+                    {
+                        veiwHand(player);
+                        crack(3, 1);
+                    }
+                    else if(PlayerTwo.hand[intInput] > 0)
+                    {
+                        PlayerTwo.hand[intInput] --; 
+                        PlayerOne.hand[intInput] ++;
+                        cardsInDiscard(2);
+                        System.out.println("Player two discarded: " + intToString(intInput));
+                    }
+                    else
+                    {
+                        System.out.println("Opponents hand:");
+                        System.out.println();
+                        System.out.println("Gluttony:" + PlayerTwo.hand[1]);
+                        System.out.println();
+                        System.out.println("Sloth:" + PlayerTwo.hand[2]);
+                        System.out.println();
+                        System.out.println("Envy:" + PlayerTwo.hand[3]);
+                        System.out.println();
+                        System.out.println("Wrath:" + PlayerTwo.hand[4]);
+                        System.out.println();
+                        System.out.println("Lust:" + PlayerTwo.hand[5]);
+                        System.out.println();
+                        System.out.println("the opponent doesnt have that gem!");
+                        crack(3, 1);
+                    }
+                }
+                else
+                {
+                    System.out.println("The opponent has no cards in thier hand! No effect");
+                }    
+            } 
+            else if (card == 4)
+            {
+                System.out.println("choose a tpye to destroy all gems of");
+                intInput = stringToInt(input.nextLine());
+                PlayerOne.discard[intInput] += PlayerOne.amulet[intInput];
+                PlayerOne.amulet[intInput] -= PlayerOne.amulet[intInput];
+                PlayerTwo.discard[intInput] += PlayerTwo.amulet[intInput];
+                PlayerTwo.amulet[intInput] -= PlayerTwo.amulet[intInput];
+            }
+            else if (card == 5)
+            {
+                cardsInDiscard(1);
+                if(PlayerOne.numInDiscard > 0)
+                {
+                    System.out.println("Opponents amulet:");
+                    System.out.println();
+                    System.out.println("Gluttony:" + PlayerOne.discard[1]);
+                    System.out.println();
+                    System.out.println("Sloth:" + PlayerOne.discard[2]);
+                    System.out.println();
+                    System.out.println("Envy:" + PlayerOne.discard[3]);
+                    System.out.println();
+                    System.out.println("Wrath:" + PlayerOne.discard[4]);
+                    System.out.println();
+                    System.out.println("Lust:" + PlayerOne.discard[5]);
+                    System.out.println();
+                    System.out.println("chose a gem to get back");
+                    intInput = stringToInt(input.nextLine());
+                    if(intInput == 6)
+                    {
+                        veiwHand(player);
+                        crack(5, 1);
+                    }
+                    else if(PlayerOne.discard[intInput] > 0)
+                    {
+                        PlayerOne.discard[intInput] --;
+                        PlayerOne.amulet[intInput] ++;
+                        cardsInAmu(1);            
+                        System.out.println("Player one's " + intToString(intInput) + " got put back in his amulet"); 
+                        play(intInput, player);
+                    }
+                    else
+                    {
+                        System.out.println("You don't have that gem in your discard!");
+                        crack(5, 1);
+                    }   
+                } 
+                else
+                {
+                    System.out.println("You have no cards in your discard! No effect");
+                }
+            }
+        }
+        else
+        {
+            if(card == 1)
+            {
+                if(PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 1)
+                {
+                    System.out.println("player two played: gluttony");
+                    PlayerTwo.amulet[1] ++;
+                    play(1, 2);
+                }
+                else if (PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 2)
+                {
+                    System.out.println("player two played: sloth");
+                    PlayerTwo.amulet[2] ++; 
+                    play(2, 2);
+                }
+                else if (PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 3)
+                {
+                    System.out.println("player two played: envy");
+                    PlayerTwo.amulet[3] ++; 
+                    play(3, 2);
+                }
+                else if (PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 4)
+                {
+                    System.out.println("player two played: wrath");
+                    PlayerTwo.amulet[4] ++; 
+                    play(4, 2);
+                }
+                else if (PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 5)
+                {
+                    System.out.println("player two played: lust");
+                    PlayerTwo.amulet[5] ++; 
+                    play(5, 2);
+                }
+            }
+            else if(card == 2)
+            {
+                theStack[4][cardsInStack - 1] = 1;
+            }
+            else if(card == 3)
+            {
+                cardsInHand(1);
+                if(PlayerOne.numInHand > 0)
+                {
+                    //check 
+                    System.out.println("Oponents hand:");
+                    System.out.println();
+                    System.out.println("Gluttony:" + PlayerOne.hand[1]);
+                    System.out.println();
+                    System.out.println("Sloth:" + PlayerOne.hand[2]);
+                    System.out.println();
+                    System.out.println("Envy:" + PlayerOne.hand[3]);
+                    System.out.println();
+                    System.out.println("Wrath:" + PlayerOne.hand[4]);
+                    System.out.println();
+                    System.out.println("Lust:" + PlayerOne.hand[5]);
+                    System.out.println();
+                    System.out.println("choose a gem for the oponent to discard");
+                    intInput = stringToInt(input.nextLine());
+                    if(intInput == 6)
+                    {
+                        veiwHand(player);
+                        crack(3, 2);
+                    }
+                    else if(PlayerTwo.hand[intInput] > 0)
+                    {
+                        PlayerOne.hand[intInput] --; 
+                        PlayerTwo.hand[intInput] ++;
+                        cardsInDiscard(1);
+                        System.out.println("Player two discarded: " + intToString(intInput));
+                    }
+                    else
+                    {
+                        System.out.println("the oponent doesnt have that gem!");
+                        crack(3, 2);
+                    }
+                }
+                else
+                {
+                    System.out.println("The oponent has no cards in thier hand! No effect");
+                }    
+            } 
+            else if (card == 4)
+            {
+                System.out.println("choose a tpye to destroy all gems of");
+                intInput = stringToInt(input.nextLine());
+                PlayerOne.discard[intInput] += PlayerOne.amulet[intInput];
+                PlayerOne.amulet[intInput] -= PlayerOne.amulet[intInput];
+                PlayerTwo.discard[intInput] += PlayerTwo.amulet[intInput];
+                PlayerTwo.amulet[intInput] -= PlayerTwo.amulet[intInput];
+            }
+            else if (card == 5)
+            {
+                cardsInDiscard(1);
+                if(PlayerTwo.numInDiscard > 0)
+                {
+                    System.out.println("Your discard:");
+                    System.out.println();
+                    System.out.println("Gluttony:" + PlayerTwo.discard[1]);
+                    System.out.println();
+                    System.out.println("Sloth:" + PlayerTwo.discard[2]);
+                    System.out.println();
+                    System.out.println("Envy:" + PlayerTwo.discard[3]);
+                    System.out.println();
+                    System.out.println("Wrath:" + PlayerTwo.discard[4]);
+                    System.out.println();
+                    System.out.println("Lust:" + PlayerTwo.discard[5]);
+                    System.out.println();
+                    System.out.println("chose a gem to get back");
+                    intInput = stringToInt(input.nextLine());
+                    if(intInput == 6)
+                    {
+                        veiwHand(player);
+                        crack(5, 2);
+                    }
+                    else if(PlayerTwo.discard[intInput] > 0)
+                    {
+                        PlayerTwo.discard[intInput] --;
+                        PlayerTwo.amulet[intInput] ++;
+                        cardsInAmu(1);
+                        System.out.println("Player two's " + intToString(intInput) + " got put back in his amulet");
+                        play(intInput, player);
+                    } 
+                    else
+                    {
+                        System.out.println("You don't have that gem in your discard!");
+                        crack(5, 2);
+                    }
+                }
+                else
+                {
+                    System.out.println("You have no cards in your discard! No effect");
+                }
+            }
+        }
+    }
 
-		// nextInt is normally exclusive of the top value,
-		// so add 1 to make it inclusive
-		int randomNum = rand.nextInt((max - min) + 1) + min;
-		return randomNum;
-	} 
+    public static void draw (Boolean display, int player)
+    {
+        if(player == 1)
+        {
+            if(display == true)
+            {
+                System.out.println("player 1 drew:");
+                if( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 1)
+                {
+                    PlayerOne.hand[1] ++;
+                    PlayerOne.cardsDrawn ++;
+                    System.out.println("Gluttony");
+                }
+                else if ( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 2)
+                {
+                    PlayerOne.hand[2] ++; 
+                    System.out.println("Sloth");
+                    PlayerOne.cardsDrawn ++;
+                }
+                else if ( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 3)
+                {
+                    PlayerOne.hand[3] ++; 
+                    System.out.println("Envy");
+                    PlayerOne.cardsDrawn ++;
+                }
+                else if ( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 4)
+                {
+                    PlayerOne.hand[4] ++; 
+                    System.out.println("Wrath");
+                    PlayerOne.cardsDrawn ++;
+                }
+                else if ( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 5)
+                {
+                    PlayerOne.hand[5] ++;
+                    System.out.println("Lust");
+                    PlayerOne.cardsDrawn ++;
+                }
+            }
+            else
+            {
+                if( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 1)
+                {
+                    PlayerOne.hand[1] ++; 
+                    PlayerOne.cardsDrawn ++;
+                }
+                else if ( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 2)
+                {
+                    PlayerOne.hand[2] ++; 
+                    PlayerOne.cardsDrawn ++;
+                }
+                else if ( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 3)
+                {
+                    PlayerOne.hand[3] ++; 
+                    PlayerOne.cardsDrawn ++;
+                }
+                else if ( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 4)
+                {
+                    PlayerOne.hand[4] ++; 
+                    PlayerOne.cardsDrawn ++;
+                }
+                else if ( PlayerOne.deck[1 + PlayerOne.cardsDrawn] == 5)
+                {
+                    PlayerOne.hand[5] ++;
+                    PlayerOne.cardsDrawn ++;
+                }    
+            }
+            cardsInHand(1);
+        }
+        else 
+        {
+            if(display == true)
+            {
+                System.out.println("player 2 drew:");
+                if( PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 1)
+                {
+                    PlayerTwo.hand[1] ++; 
+                    PlayerTwo.cardsDrawn ++;
+                    System.out.println("Gluttony");
+                }
+                else if ( PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 2)
+                {
+                    PlayerTwo.hand[2] ++; 
+                    System.out.println("Sloth");
+                    PlayerTwo.cardsDrawn ++;
+                }
+                else if ( PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 3)
+                {
+                    PlayerTwo.hand[3] ++; 
+                    System.out.println("Envy");
+                    PlayerTwo.cardsDrawn ++;
+                }
+                else if ( PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 4)
+                {
+                    PlayerTwo.hand[4] ++; 
+                    System.out.println("Wrath");
+                    PlayerTwo.cardsDrawn ++;
+                }
+                else if ( PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 5)
+                {
+                    PlayerTwo.hand[5] ++;
+                    System.out.println("Lust");
+                    PlayerTwo.cardsDrawn ++;
+                }
+            }
+            else
+            {
+                if( PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 1)
+                {
+                    PlayerTwo.hand[1] ++; 
+                    PlayerTwo.cardsDrawn ++;
+                }
+                else if ( PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 2)
+                {
+                    PlayerTwo.hand[2] ++; 
+                    PlayerTwo.cardsDrawn ++;
+                }
+                else if ( PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 3)
+                {
+                    PlayerTwo.hand[3] ++; 
+                    PlayerTwo.cardsDrawn ++;
+                }
+                else if ( PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 4)
+                {
+                    PlayerTwo.hand[4] ++; 
+                    PlayerTwo.cardsDrawn ++;
+                }
+                else if ( PlayerTwo.deck[1 + PlayerTwo.cardsDrawn] == 5)
+                {
+                    PlayerTwo.hand[5] ++;
+                    PlayerTwo.cardsDrawn ++;
+                }    
+            }
+            cardsInHand(2);
+        }
+    } 
+
+    public static void cardsInHand (int player)
+    {
+        if(player == 1)
+        {
+            PlayerOne.numInHand = PlayerOne.hand[1] + PlayerOne.hand[2] + PlayerOne.hand[3] + PlayerOne.hand[4] + PlayerOne.hand[5];
+        }
+        else
+        {
+            PlayerTwo.numInHand = PlayerTwo.hand[1] + PlayerTwo.hand[2] + PlayerTwo.hand[3] + PlayerTwo.hand[4] + PlayerTwo.hand[5]; 
+        }
+    }
+
+    public static void cardsInAmu(int player)
+    {
+        if(player == 1)
+        {
+            PlayerOne.numInAmu = PlayerOne.amulet[1] + PlayerOne.amulet[2] + PlayerOne.amulet[3] + PlayerOne.amulet[4] + PlayerOne.amulet[5];
+        }
+        else
+        {
+            PlayerTwo.numInAmu = PlayerTwo.amulet[1] + PlayerTwo.amulet[2] + PlayerTwo.amulet[3] + PlayerTwo.amulet[4] + PlayerTwo.amulet[5];
+        }
+    }
+
+    public static void cardsInDiscard(int player)
+    {
+        if(player == 1)
+        {
+            PlayerOne.numInDiscard = PlayerOne.discard[1] + PlayerOne.discard[2] + PlayerOne.discard[3] + PlayerOne.discard[4] + PlayerOne.discard[5];
+        }
+        else
+        {
+            PlayerTwo.numInDiscard= PlayerTwo.discard[1] + PlayerTwo.discard[2] + PlayerTwo.discard[3] + PlayerTwo.discard[4] + PlayerTwo.discard[5];
+        }
+    }
+
+    public static void description(String card)
+    {
+        if(card.equals("g"))
+        {
+            System.out.println("The Gem of Gluttony");
+            System.out.println("When you add this gem to your amulet it becomes so eager to consume energy");
+            System.out.println("that it will grab any enrgy it can get its hands on and this causes a realese");
+            System.out.println("of variable energy and produces a random effect. When you crack it, it takes a");
+            System.out.println("gem from your pile and puts it on your amulet");
+        }
+        else if(card.equals("s"))
+        {
+            System.out.println("The Gem of Sloth");
+            System.out.println("This gem doesn't want to do much when it is added to your amulet, it will give you");
+            System.out.println("a new gem from your pile to do the work for it. When you crack it, it spreads out");
+            System.out.println("it's lazyness and makes other effects stop and stops gems before they even get to");
+            System.out.println("their amulet, they become so tired and done with work they go to the discard instead");
+        }
+        else if(card.equals("e"))
+        {
+            System.out.println("The Gem of Envy");
+            System.out.println("The instant this gem enters your amulet it sees the opponents gem rack and wants what");
+            System.out.println("it doesn't have, it'll try to steal a gem from their rack, but it doesnt have enough");
+            System.out.println("energy to steal it on it's own, so the gem it wanted will just go to the discard. when");
+            System.out.println("you crack it however, it has enough energy to steal the card and add it to your rack");
+        }
+        else if(card.equals("w"))
+        {
+            System.out.println("The Gem of Wrath");
+            System.out.println("When this gem is put in your amulet it exausts all of it's energy in an intant with");
+            System.out.println("a barrage of rage. This realease of anger can destroy a gem in an opponents amulet");
+            System.out.println("When you give it more energy by craking it however, the realese will destroy all gems");
+            System.out.println("of one type.");
+        }
+        else if(card.equals("l"))
+        {
+            System.out.println("The Gem of Lust");
+            System.out.println("This gem needs its fellow gems back with it, and it'll do whatever it can to get them");
+            System.out.println("back. When it's put in your amulet it will put a gem from your discard in your rack in");
+            System.out.println("hopes you will reunite the two of them. When you crack it, it uses the energy from the");
+            System.out.println("other gem to sacrifice itself in order to get it's love back. You can bring another gem");
+            System.out.println("in your discard into your amulet");
+        }
+    }
+
+    public static String intToString(int code)
+    {
+        String name = "not a card";
+        if(code == 1)
+        {
+            name = "Gluttony";
+        }
+        else if (code == 2)
+        {
+            name = "Sloth";
+        }
+        else if (code == 3)
+        {
+            name = "Envy";
+        }
+        else if (code == 4)
+        {
+            name = "Wrath";
+        }
+        else if (code == 5)
+        {
+            name = "Lust";
+        }
+        return name;
+    }
+
+    public static int stringToInt(String name)
+    {
+        int code = 0;
+        if(name.equals("gluttony"))
+        {
+            code = 1;
+        }
+        else if(name.equals("sloth"))
+        {
+            code = 2;
+        }
+        else if(name.equals("envy"))
+        {
+            code = 3;
+        }
+        else if(name.equals("wrath"))
+        {
+            code = 4;
+        }
+        else if(name.equals("lust"))
+        {
+            code = 5;
+        }
+        else if (name.equals("cancel"))
+        {
+            code = 0;
+        }
+        else if(name.equals("h"))
+        {
+            code = 6;
+        }
+        return code;
+    }
+
+    public static Boolean instantEffectCheck (int player)
+    {
+        Boolean response;
+        System.out.println("Player " + player + " do you have a response? (y/n)");
+        strInput = input.nextLine();   
+        if(strInput.equals("h"))
+        {
+            veiwHand(player);
+            response = instantEffectCheck(player);
+        }
+        else if(strInput.equals("y"))
+        {
+            System.out.println("Player " + player + " responds.");
+            response = true;
+        }
+        else if (strInput.equals("n"))
+        {
+            response = false;
+        }
+        else
+        {
+            System.out.println("Answer with 'y' or 'n'");
+            response = instantEffectCheck(player);
+        }
+        return response;
+    }
+
+    public static void crackWhat(int player)
+    {
+        if(player == 1)
+        {
+            cardsInHand(1);
+            if(PlayerOne.numInHand > 1)
+            {
+                System.out.println("What gem are you cracking?");
+                intInput = stringToInt(input.nextLine()); 
+                if(intInput == 6)
+                {
+                    veiwHand(player);
+                    crackWhat(player);
+                }
+                else if(PlayerOne.hand[intInput] > 0)
+                {
+                    System.out.println("What gem are you discarding?");
+                    secondIntInput = stringToInt(input.nextLine());
+                    addCardToStack(intInput, player, 1, secondIntInput);
+                    System.out.println("cards in stack: " + cardsInStack);
+                    System.out.println("card: " + theStack[1][cardsInStack]);
+                    System.out.println("discarded card: " + theStack[5][cardsInStack]);
+                    PlayerOne.hand[theStack[1][cardsInStack]] --;
+                    if(secondIntInput == 6)
+                    {
+                        veiwHand(player);
+                        crackWhat(player);
+                    }
+                    else
+                    {
+                        if(PlayerOne.hand[secondIntInput] > 0)
+                        {
+                            PlayerOne.hand[theStack[5][cardsInStack]] --;
+                        }
+                        else
+                        {
+                            System.out.println("You dont have that gem!");
+                            cardsInStack --;
+                            crackWhat(player);
+                        }
+                    }
+                }
+                else
+                {
+                    System.out.println("You dont have that gem!");
+                    cardsInStack --;
+                    crackWhat(player);
+                }
+            }
+            else
+            {
+                System.out.println("You dont have enough cards in hand");
+            }
+        }
+        else
+        {
+            cardsInHand(2);
+            if(PlayerTwo.numInHand > 1)
+            {
+                System.out.println("What gem are you cracking?");
+                intInput = stringToInt(input.nextLine()); 
+                if(intInput == 6)
+                {
+                    veiwHand(player);
+                    crackWhat(player);
+                }
+                else if(PlayerTwo.hand[intInput] > 0)
+                {
+                    System.out.println("What gem are you discarding?");
+                    secondIntInput = stringToInt(input.nextLine());
+                    addCardToStack(intInput, player, 1, secondIntInput);
+                    PlayerTwo.hand[theStack[1][cardsInStack]] --;
+                    if(intInput == 6)
+                    {
+                        veiwHand(player);
+                    }
+                    else
+                    {
+                        if(PlayerTwo.hand[secondIntInput] > 0)
+                        {
+                            PlayerTwo.hand[theStack[5][cardsInStack]] --;
+                        }
+                        else
+                        {
+                            System.out.println("You dont have that gem!");
+                            cardsInStack --;
+                            crackWhat(player);
+                        }
+                    }
+                }
+                else
+                {
+                    System.out.println("You dont have that gem!");
+                    crackWhat(player);
+                }
+            }
+            else
+            {
+                System.out.println("You dont have enough cards in hand");
+            }
+        }   
+    }
+
+    public static void reveal(int player, String zone)
+    {
+
+    }
+
+    public static void addCardToStack (int card,int player, int crack, int discard)
+    {        
+        cardsInStack ++;
+        System.out.println("cards in stack: " + cardsInStack);
+        theStack[1][cardsInStack] = card;
+        theStack[2][cardsInStack] = player;
+        theStack[3][cardsInStack] = crack;
+        theStack[4][cardsInStack] = 0;
+        theStack[5][cardsInStack] = discard;
+        if (player == 2)
+        {
+            if(instantEffectCheck(1) == true)
+            {
+                crackWhat(1);
+            }
+        }
+        else
+        {
+            if(instantEffectCheck(2) == true)
+            {
+                crackWhat(2);
+            }
+        }
+    }
+
+    public static void resolveStack()
+    {
+        int lastOut = theStack[2][1];
+        while(cardsInStack > 0)
+        {
+            System.out.println("countered? " + theStack[4][cardsInStack]);
+            if(theStack[4][cardsInStack] == 0)
+            {
+                System.out.println("card: " + theStack[1][cardsInStack]);
+                System.out.println("player: " + theStack[2][cardsInStack]);
+                System.out.println("crack? " + theStack[3][cardsInStack]);
+                cast(theStack[1][cardsInStack], theStack[2][cardsInStack], theStack[3][cardsInStack]);
+                if(theStack[3][cardsInStack]== 0)
+                {
+                    if(theStack[2][cardsInStack] == 1)
+                    {
+                        PlayerOne.amulet[theStack[1][cardsInStack]] ++;
+                    }
+                    else
+                    {
+                        PlayerTwo.amulet[theStack[1][cardsInStack]] ++;
+                    }
+                }
+                else if(theStack[3][cardsInStack] == 1)
+                {
+                    if(theStack[2][cardsInStack] == 1)
+                    {
+                        PlayerOne.discard[theStack[1][cardsInStack]] ++;
+                        PlayerOne.discard[theStack[5][cardsInStack]] ++;
+                    }
+                    else
+                    {
+
+                        PlayerTwo.discard[theStack[1][cardsInStack]] ++;
+                        PlayerTwo.discard[theStack[5][cardsInStack]] ++;
+                    }
+                }
+            }
+            else 
+            {
+                System.out.println("player " + theStack[2][cardsInStack] + "'s " + intToString(theStack[1][cardsInStack]) + " got countered");
+            } 
+            if(theStack[2][cardsInStack] == 1)
+            {
+                if(instantEffectCheck(1) == true)
+                {
+                    crackWhat(1);
+                }
+            }
+            else 
+            {
+                if(instantEffectCheck(2) == true)
+                {
+                    crackWhat(2);
+                }
+            }
+            cardsInStack --; 
+        } 
+        System.out.println("Stack resolved");
+        System.out.println("cards in stack: " + cardsInStack);
+    }
+    public static void cast (int card, int player, int crack)
+    {
+        if(crack == 1)
+        {
+            crack(card, player);
+        }
+        else if(crack == 0)
+        {
+            play(card, player); 
+        }
+    }
+
+    public static void veiwHand (int player)
+    {
+        if(player == 1)
+        {
+            System.out.println("Gluttony: " + PlayerOne.hand[1]);
+            System.out.println();
+            System.out.println("Sloth: " + PlayerOne.hand[2]);
+            System.out.println();
+            System.out.println("Envy: " + PlayerOne.hand[3]);
+            System.out.println();
+            System.out.println("Wrath: " + PlayerOne.hand[4]);
+            System.out.println();
+            System.out.println("Lust: " + PlayerOne.hand[5]);
+            System.out.println();
+        }
+        else if(player == 2)
+        {
+            System.out.println("Gluttony: " + PlayerTwo.hand[1]);
+            System.out.println();
+            System.out.println("Sloth: " + PlayerTwo.hand[2]);
+            System.out.println();
+            System.out.println("Envy: " + PlayerTwo.hand[3]);
+            System.out.println();
+            System.out.println("Wrath: " + PlayerTwo.hand[4]);
+            System.out.println();
+            System.out.println("Lust: " + PlayerTwo.hand[5]);
+            System.out.println();
+        }
+    }
+
+    public static int randInt(int min, int max) 
+    {
+        // Usually this can be a field rather than a method variable
+        Random rand = new Random();
+
+        // nextInt is normally exclusive of the top value,
+        // so add 1 to make it inclusive
+        int randomNum = rand.nextInt((max - min) + 1) + min;
+        return randomNum;
+    } 
 }
-
-
-
-
-
 
