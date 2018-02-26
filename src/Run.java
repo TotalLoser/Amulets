@@ -1213,7 +1213,7 @@ public class Run
         return code;
     }
 
-    public static Boolean instantEffectCheck (int player)
+    public static Boolean m (int player)
     {
         Boolean response;
         System.out.println("Player " + player + " do you have a response? (y/n)");
